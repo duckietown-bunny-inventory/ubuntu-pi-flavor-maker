@@ -74,9 +74,9 @@ function bootstrap() {
     # Use the same base system for all flavours.
     if [ ! -f "${R}/tmp/.bootstrap" ]; then
         if [ "${ARCH}" == "armv7l" ]; then
-            debootstrap --verbose $RELEASE $R http://ports.ubuntu.com/
+            debootstrap --verbose $RELEASE $R http://10.65.53.100/mirrors/ubuntu/
         else
-            qemu-debootstrap --verbose --arch=armhf $RELEASE $R http://ports.ubuntu.com/
+            qemu-debootstrap --verbose --arch=armhf $RELEASE $R http://10.65.53.100/mirrors/ubuntu/
         fi
         touch "$R/tmp/.bootstrap"
     fi
@@ -93,6 +93,23 @@ function generate_locale() {
 # Set up initial sources.list
 function apt_sources() {
     cat <<EOM >$R/etc/apt/sources.list
+deb http://10.65.53.100/mirrors/ubuntu/ ${RELEASE} main restricted universe multiverse
+#deb-src http://10.65.53.100/mirrors/ubuntu/ ${RELEASE} main restricted universe multiverse
+
+deb http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-updates main restricted universe multiverse
+#deb-src http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-updates main restricted universe multiverse
+
+deb http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-security main restricted universe multiverse
+#deb-src http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-security main restricted universe multiverse
+
+deb http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-backports main restricted universe multiverse
+#deb-src http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-backports main restricted universe multiverse
+EOM
+}
+
+# Set up standard sources.list
+function standard_apt_sources() {
+    cat <<EOM >$R/etc/apt/sources.list
 deb http://ports.ubuntu.com/ ${RELEASE} main restricted universe multiverse
 deb-src http://ports.ubuntu.com/ ${RELEASE} main restricted universe multiverse
 
@@ -105,6 +122,8 @@ deb-src http://ports.ubuntu.com/ ${RELEASE}-security main restricted universe mu
 deb http://ports.ubuntu.com/ ${RELEASE}-backports main restricted universe multiverse
 deb-src http://ports.ubuntu.com/ ${RELEASE}-backports main restricted universe multiverse
 EOM
+    chroot $R apt-get clean
+    chroot $R apt-get update
 }
 
 function apt_upgrade() {
@@ -628,6 +647,7 @@ function stage_04_corrections() {
 
     #Insert corrections here.
 
+    standard_apt_sources
     apt_clean
     clean_up
     umount_system

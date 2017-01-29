@@ -105,6 +105,10 @@ deb http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-security main restricted univ
 deb http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-backports main restricted universe multiverse
 #deb-src http://10.65.53.100/mirrors/ubuntu/ ${RELEASE}-backports main restricted universe multiverse
 EOM
+
+    cat <<EOM >$R/etc/apt/sources.list.d/ros-latest.list
+deb http://10.65.53.100/mirrors/ros/ xenial main
+EOM
 }
 
 # Set up standard sources.list
@@ -121,6 +125,10 @@ deb-src http://ports.ubuntu.com/ ${RELEASE}-security main restricted universe mu
 
 deb http://ports.ubuntu.com/ ${RELEASE}-backports main restricted universe multiverse
 deb-src http://ports.ubuntu.com/ ${RELEASE}-backports main restricted universe multiverse
+EOM
+
+    cat <<EOM >$R/etc/apt/sources.list.d/ros-latest.list
+deb http://packages.ros.org/ros/ubuntu xenial main
 EOM
     chroot $R apt-get clean
     chroot $R apt-get update
@@ -454,9 +462,18 @@ function install_software() {
         # raspi-config - Needs forking/modifying to support Ubuntu
         # chroot $R apt-get -y install raspi-config
     fi
+
+    if [ "${QUALITY}" == "ros" ]; then
+        wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | chroot $R apt-key add -
+        chroot $R apt-get update
+        chroot $R apt-get -y install ros-kinetic-ros-base
+    fi
 }
 
 function clean_up() {
+
+    standard_apt_sources
+    
     rm -f $R/etc/apt/*.save || true
     rm -f $R/etc/apt/sources.list.d/*.save || true
     rm -f $R/etc/resolvconf/resolv.conf.d/original

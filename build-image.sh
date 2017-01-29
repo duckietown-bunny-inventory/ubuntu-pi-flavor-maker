@@ -470,10 +470,7 @@ function install_software() {
     fi
 }
 
-function clean_up() {
-
-    standard_apt_sources
-    
+function clean_up() {    
     rm -f $R/etc/apt/*.save || true
     rm -f $R/etc/apt/sources.list.d/*.save || true
     rm -f $R/etc/resolvconf/resolv.conf.d/original
@@ -653,6 +650,7 @@ function stage_03_raspi2() {
     install_software
     apt_upgrade
     apt_clean
+    standard_apt_sources
     clean_up
     umount_system
     make_raspi2_image ${FS_TYPE} ${FS_SIZE}

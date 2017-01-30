@@ -23,7 +23,7 @@ FLAVOUR="lubuntu"
 FLAVOUR_NAME="Lubuntu"
 RELEASE="xenial"
 VERSION="16.04"
-QUALITY=""
+QUALITY="ros"
 
 # Either 'ext4' or 'f2fs'
 FS_TYPE="ext4"
@@ -47,13 +47,8 @@ ARCH=$(uname -m)
 export TZ=UTC
 
 
-if [ "${FLAVOUR}" == "ubuntu-minimal" ] || [ "${FLAVOUR}" == "ubuntu-standard" ]; then
-    USERNAME="ubuntu"
-    OEM_CONFIG=0
-else
-    USERNAME="${FLAVOUR}"
-    OEM_CONFIG=1
-fi
+USERNAME="ubuntu"
+OEM_CONFIG=0
 
 # Override OEM_CONFIG here if required. Either 0 or 1.
 # - 0 to hardcode a user.

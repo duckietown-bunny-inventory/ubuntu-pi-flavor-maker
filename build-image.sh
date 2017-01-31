@@ -219,7 +219,10 @@ function create_user() {
     else
         chroot $R adduser --gecos "${FLAVOUR_NAME}" --add_extra_groups --disabled-password ${USERNAME}
     fi
+
     chroot $R usermod -a -G sudo -p ${PASSWD} ${USERNAME}
+    mkdir -p $R/home/${USERNAME}
+    chroot $R chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 }
 
 # Prepare oem-config for first boot.

@@ -229,8 +229,6 @@ function create_user() {
     fi
 
     chroot $R usermod -a -G sudo -p ${PASSWD} ${USERNAME}
-    mkdir -p $R/home/${USERNAME}
-    chroot $R chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 }
 
 # Prepare oem-config for first boot.

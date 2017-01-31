@@ -225,7 +225,7 @@ function create_user() {
         chroot $R addgroup --gid 29999 oem
         chroot $R adduser --gecos "OEM Configuration (temporary user)" --add_extra_groups --disabled-password --gid 29999 --uid 29999 ${USERNAME}
     else
-        chroot $R adduser --gecos "${FLAVOUR_NAME}" --add_extra_groups --disabled-password ${USERNAME}
+        chroot $R adduser --gecos "Ubuntu User" --add_extra_groups --disabled-password ${USERNAME}
     fi
 
     chroot $R usermod -a -G sudo -p ${PASSWD} ${USERNAME}

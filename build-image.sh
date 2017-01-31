@@ -511,7 +511,9 @@ function clean_up() {
     rm -f $R/root/.ssh/known_hosts
 
     # Remove bogus home directory
-    rm -rf $R/home/${SUDO_USER} || true
+    if [ "${USERNAME}" !=  "${SUDO_USER}" ]; then
+        rm -rf $R/home/${SUDO_USER} || true
+    fi
 
     # Machine-specific, so remove in case this system is going to be
     # cloned.  These will be regenerated on the first boot.

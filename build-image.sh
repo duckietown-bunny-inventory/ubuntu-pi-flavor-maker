@@ -161,6 +161,14 @@ function ubuntu_standard() {
     fi
 }
 
+function ros_packages() {
+    if [ "${QUALITY}" == "ros" ]; then
+        wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | chroot $R apt-key add -
+        chroot $R apt-get update
+        chroot $R apt-get -y install ros-kinetic-ros-base
+    fi
+}
+
 # Install meta packages
 function install_meta() {
     local META="${1}"
@@ -465,12 +473,6 @@ function install_software() {
         # raspi-config - Needs forking/modifying to support Ubuntu
         # chroot $R apt-get -y install raspi-config
     fi
-
-    if [ "${QUALITY}" == "ros" ]; then
-        wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | chroot $R apt-key add -
-        chroot $R apt-get update
-        chroot $R apt-get -y install ros-kinetic-ros-base
-    fi
 }
 
 function clean_up() {    
@@ -612,6 +614,7 @@ function stage_01_base() {
     apt_upgrade
     ubuntu_minimal
     ubuntu_standard
+    ros_packages
     apt_clean
     umount_system
     sync_to "${DESKTOP_R}"
